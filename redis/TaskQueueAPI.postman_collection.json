@@ -1,0 +1,312 @@
+{
+    "info": {
+      "name": "Task Queue API",
+      "_postman_id": "task-queue-api",
+      "description": "Тесты для API очереди задач (POST /tasks)",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Successful Task Creation",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"payload\": \"Test task\",\n  \"priority\": 2,\n  \"execute_at\": \"2025-04-11T12:00:00Z\"\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 201\", function () {",
+                "    pm.response.to.have.status(201);",
+                "});",
+                "",
+                "pm.test(\"Response body contains status\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.status).to.equal(\"task added\");",
+                "});",
+                "",
+                "pm.test(\"Content-Type is JSON\", function () {",
+                "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+                "});"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Immediate Task Creation",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"payload\": \"Immediate task\",\n  \"priority\": 3\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 201\", function () {",
+                "    pm.response.to.have.status(201);",
+                "});",
+                "",
+                "pm.test(\"Response body contains status\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.status).to.equal(\"task added\");",
+                "});",
+                "",
+                "pm.test(\"Content-Type is JSON\", function () {",
+                "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+                "});"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Invalid JSON Body",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "invalid json"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 400\", function () {",
+                "    pm.response.to.have.status(400);",
+                "});",
+                "",
+                "pm.test(\"Response body contains error\", function () {",
+                "    pm.expect(pm.response.text()).to.equal(\"Invalid request body\\n\");",
+                "});"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Empty Payload",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"payload\": \"\",\n  \"priority\": 2\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 400\", function () {",
+                "    pm.response.to.have.status(400);",
+                "});",
+                "",
+                "pm.test(\"Response body contains error\", function () {",
+                "    pm.expect(pm.response.text()).to.equal(\"Payload is required\\n\");",
+                "});"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Invalid Priority",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"payload\": \"Test task\",\n  \"priority\": 0\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 400\", function () {",
+                "    pm.response.to.have.status(400);",
+                "});",
+                "",
+                "pm.test(\"Response body contains error\", function () {",
+                "    pm.expect(pm.response.text()).to.equal(\"Invalid priority\\n\");",
+                "});"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Create Task Load Test",
+        "event": [
+          {
+            "listen": "prerequest",
+            "script": {
+              "exec": [
+                "// Генерируем уникальный payload для каждого запроса",
+                "pm.variables.set(\"payload\", \"Load test task \" + pm.iteration);"
+              ],
+              "type": "text/javascript"
+            }
+          },
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "// Инициализируем переменные коллекции для метрик, если они не существуют",
+                "if (!pm.collectionVariables.has(\"totalRequests\")) {",
+                "    pm.collectionVariables.set(\"totalRequests\", 0);",
+                "    pm.collectionVariables.set(\"successfulRequests\", 0);",
+                "    pm.collectionVariables.set(\"failedRequests\", 0);",
+                "    pm.collectionVariables.set(\"responseTimes\", JSON.stringify([]));",
+                "}",
+                "",
+                "// Обновляем счётчик запросов",
+                "var totalRequests = parseInt(pm.collectionVariables.get(\"totalRequests\")) + 1;",
+                "pm.collectionVariables.set(\"totalRequests\", totalRequests);",
+                "",
+                "// Сохраняем время ответа",
+                "var responseTimes = JSON.parse(pm.collectionVariables.get(\"responseTimes\"));",
+                "responseTimes.push(pm.response.responseTime);",
+                "pm.collectionVariables.set(\"responseTimes\", JSON.stringify(responseTimes));",
+                "",
+                "// Проверяем статус ответа",
+                "pm.test(\"Status code is 201\", function () {",
+                "    if (pm.response.code === 201) {",
+                "        var successfulRequests = parseInt(pm.collectionVariables.get(\"successfulRequests\")) + 1;",
+                "        pm.collectionVariables.set(\"successfulRequests\", successfulRequests);",
+                "    } else {",
+                "        var failedRequests = parseInt(pm.collectionVariables.get(\"failedRequests\")) + 1;",
+                "        pm.collectionVariables.set(\"failedRequests\", failedRequests);",
+                "    }",
+                "    pm.expect(pm.response.code).to.equal(201);",
+                "});",
+                "",
+                "pm.test(\"Response body contains status\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.status).to.equal(\"task added\");",
+                "});",
+                "",
+                "// Логируем метрики после последнего запроса",
+                "if (totalRequests >= pm.info.iterationCount) {",
+                "    var times = JSON.parse(pm.collectionVariables.get(\"responseTimes\"));",
+                "    var avgTime = times.reduce((a, b) => a + b, 0) / times.length;",
+                "    var minTime = Math.min(...times);",
+                "    var maxTime = Math.max(...times);",
+                "    console.log(\"=== Load Test Summary ===\");",
+                "    console.log(\"Total Requests: \" + totalRequests);",
+                "    console.log(\"Successful Requests: \" + pm.collectionVariables.get(\"successfulRequests\"));",
+                "    console.log(\"Failed Requests: \" + pm.collectionVariables.get(\"failedRequests\"));",
+                "    console.log(\"Average Response Time: \" + avgTime.toFixed(2) + \" ms\");",
+                "    console.log(\"Min Response Time: \" + minTime + \" ms\");",
+                "    console.log(\"Max Response Time: \" + maxTime + \" ms\");",
+                "}"
+              ],
+              "type": "text/javascript"
+            }
+          }
+        ],
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"payload\": \"{{payload}}\",\n  \"priority\": 2,\n  \"execute_at\": \"2025-04-11T12:00:00Z\"\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/tasks",
+            "host": ["{{baseUrl}}"],
+            "path": ["tasks"]
+          }
+        },
+        "response": []
+      }
+    ],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:8080",
+        "description": "Базовый URL API"
+      }
+    ]
+  }

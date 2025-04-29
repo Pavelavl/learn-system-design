@@ -1,0 +1,28 @@
+redis:
+  addr: "localhost:6379"
+
+http:
+  port: ":8080"
+
+queues:
+  priority_key: "priority_queue"
+  delayed_key: "delayed_queue"
+  processing_key: "processing_queue"
+  shards: 4
+
+metrics:
+  key: "metrics"
+
+priorities:
+  low: 1
+  medium: 2
+  high: 3
+
+retry:
+  max_attempts: 3
+  backoff_initial: 100
+  backoff_factor: 2
+
+logging:
+  level: "info"
+  format: "console"
